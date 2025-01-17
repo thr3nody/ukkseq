@@ -20,7 +20,7 @@ sequenceDiagram
         Browser-->>Anonymouse: Display success and log in
         activate Anonymouse
         deactivate Browser
-    else Validation Success
+    else Validation Fail
         Server-->>Browser: Error message
         deactivate Server
         activate Browser
