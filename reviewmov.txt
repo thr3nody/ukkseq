@@ -1,0 +1,33 @@
+sequenceDiagram
+    actor User
+    participant Browser
+    participant Server
+    participant Database
+    participant SessionManager
+
+    User->>+Browser: Enter search query
+    Browser->>-Server: Send search query + Session token
+    activate Server
+    Server->>+SessionManager: Validate session
+    SessionManager-->>-Server: Session valid
+    Server->>+Database: Search for movies
+    Database-->>-Server: Return search results
+    Server-->>Browser: Display search results
+    activate Browser
+    deactivate Server
+    Browser-->>+User: Show movies
+    deactivate Browser
+
+    User->>-Browser: Select a movie to review
+    activate Browser
+    Browser->>Server: Submit review (Rating and or Rating and Comment)
+    deactivate Browser
+    activate Server
+
+    Server->>Database: Save review for the movie
+    Database-->>Server: Review saved
+    Server-->>Browser: Confirmation message
+    activate Browser
+    deactivate Server
+    Browser-->>User: Display success
+    deactivate Browser
