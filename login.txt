@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Server
+    participant Database
+    participant SessionManager
+
+    User->>+Browser: Enter email and password
+    Browser->>-Server: Submit login credentials
+    activate Server
+    Server->>+Database: Validate credentials
+    Database-->>-Server: Validation result
+    alt Credentials valid
+        Server->>+SessionManager: Create user session
+        SessionManager-->>-Server: Session created
+        Server-->>+Browser: Success message + Session token
+        Browser-->>-User: Log in successful
+    else Credentials invalid
+        Server-->>+Browser: Error message
+        deactivate Server
+        Browser-->>-User: Display error
+    end
