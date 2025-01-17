@@ -18,13 +18,11 @@ sequenceDiagram
         Server-->>Browser: Success message + Session token
         activate Browser
         Browser-->>Anonymouse: Display success and log in
-        activate Anonymouse
         deactivate Browser
     else Validation Fail
         Server-->>Browser: Error message
         deactivate Server
         activate Browser
         Browser-->>Anonymouse: Display error
-        deactivate Anonymouse
         deactivate Browser
     end
