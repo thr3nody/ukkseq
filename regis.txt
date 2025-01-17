@@ -1,22 +1,30 @@
 sequenceDiagram
-    participant Anonymouse
+    actor Anonymouse
     participant Browser
     participant Server
     participant Database
     participant SessionManager
 
-    Anonymouse->>Browser: Fill registration form
-    Browser->>Server: Submit form data
-    Server->>Database: Validate user data
-    Database-->>Server: Data validation result
-    alt Successful validation
-        Server->>Database: Create new user record
-        Database-->>Server: User record created
-        Server->>SessionManager: Create user session
-        SessionManager-->>Server: Session created
+    Anonymouse->>+Browser: Fill registration form
+    Browser->>-Server: Submit form data
+    activate Server
+    Server->>+Database: Validate user data
+    Database-->>-Server: Data validation result
+    alt Validation Success
+        Server->>+Database: Create new user record
+        Database-->>-Server: User record created
+        Server->>+SessionManager: Create user session
+        SessionManager-->>-Server: Session created
         Server-->>Browser: Success message + Session token
+        activate Browser
         Browser-->>Anonymouse: Display success and log in
-    else Validation fails
+        activate Anonymouse
+        deactivate Browser
+    else Validation Success
         Server-->>Browser: Error message
+        deactivate Server
+        activate Browser
         Browser-->>Anonymouse: Display error
+        deactivate Anonymouse
+        deactivate Browser
     end
