@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor Author
+    participant Browser
+    participant Server
+    participant Database
+    participant SessionManager
+
+    Author->>+Browser: Edit cast details
+    Browser->>-Server: Submit updated cast data + Session token
+    activate Server
+    Server->>+SessionManager: Validate session
+    SessionManager-->>-Server: Session valid?
+    
+    alt Session valid (Author authenticated)
+        Server->>+Database: Update cast details
+        Database-->>-Server: Cast updated successfully
+        Server-->>+Browser: Success Message
+        Browser-->>-Author: Display success
+    else Session invalid (Unauthorized)
+        Server-->>+Browser: Error message (Unauthorized)
+        deactivate Server
+        Browser-->>-Author: Display error
+    end
