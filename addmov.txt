@@ -1,0 +1,22 @@
+sequenceDiagram
+    actor Author
+    participant Browser
+    participant Server
+    participant Database
+    participant SessionManager
+
+    Author->>+Browser: Fill movie details
+    Browser->>-Server: Submit movie data + Session token
+    activate Server
+    Server->>+SessionManager: Validate session
+    SessionManager-->>-Server: Session valid?
+    alt Session valid (Author authenticated)
+        Server->>+Database: Save movie details
+        Database-->>-Server: Movie saved successfully
+        Server-->>+Browser: Success Message
+        Browser-->>-Author: Display success
+    else Session invalid (Unauthorized)
+        Server-->>+Browser: Error message (Unauthorized)
+        deactivate Server
+        Browser-->>-Author: Display error
+    end
