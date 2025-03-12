@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor Author
+    participant Browser
+    participant Server
+    participant Database
+    participant SessionManager
+
+    Author->>+Browser: Initiate age rating deletion
+    Browser->>-Server: Submit delete request with age rating ID + Session token
+    activate Server
+    Server->>+SessionManager: Validate session
+    SessionManager-->>-Server: Session valid?
+    
+    alt Session valid (Author authenticated)
+        Server->>+Database: Delete age rating record with given ID
+        Database-->>-Server: Age rating deletion confirmed
+        Server-->>+Browser: Success message
+        Browser-->>-Author: Display deletion success
+    else Session invalid (Unauthorized)
+        Server-->>+Browser: Error message (Unauthorized)
+        deactivate Server
+        Browser-->>-Author: Display error
+    end

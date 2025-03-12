@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor Author
+    participant Browser
+    participant Server
+    participant Database
+    participant SessionManager
+
+    Author->>+Browser: Initiate cast deletion
+    Browser->>-Server: Submit delete request with cast ID + Session token
+    activate Server
+    Server->>+SessionManager: Validate session
+    SessionManager-->>-Server: Session valid?
+    
+    alt Session valid (Author authenticated)
+        Server->>+Database: Delete cast record with given ID
+        Database-->>-Server: Cast deletion confirmed
+        Server-->>+Browser: Success message
+        Browser-->>-Author: Display deletion success
+    else Session invalid (Unauthorized)
+        Server-->>+Browser: Error message (Unauthorized)
+        deactivate Server
+        Browser-->>-Author: Display error
+    end

@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor Author
+    participant Browser
+    participant Server
+    participant Database
+    participant SessionManager
+
+    Author->>+Browser: Request review history
+    Browser->>-Server: Submit request with session token
+    activate Server
+    Server->>+SessionManager: Validate session
+    SessionManager-->>-Server: Session valid?
+    
+    alt Session valid (User authenticated)
+        Server->>+Database: Query user's review history
+        Database-->>-Server: Return review data
+        Server-->>+Browser: Send review history data
+        Browser-->>-Author: Display review history
+    else Session invalid (Unauthorized)
+        Server-->>+Browser: Error message (Unauthorized)
+        Browser-->>-Author: Display error
+        deactivate Server
+    end
